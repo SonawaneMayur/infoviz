@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Graph Visualization</title>
+    <style type="text/css">
+        #graph {
+            height: 700px;
+            border: 1px solid lightgray;
+        }
+
+        #filterInput {
+            margin-bottom: 20px;
+        }
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" type="text/css" />-->
+</head>
+
+<body>
+<input id="filterInput" placeholder="Filter by label" type="text">
+<label for="exactMatchCheckbox">Exact Match:</label>
+<input id="exactMatchCheckbox" type="checkbox"/>
+<div id="graph"></div>
+
+<script type="text/javascript">
+        // Data object
+        const data = JSON.parse('{{ graph_data | escapejs }}');
+<!--        console.log(data)-->
+<!--        const data = {-->
+<!--                      'nodes': [-->
+<!--                                {'id': '6233504d-70a8-4a4b-9d52-5d3c28f509a2', 'label': 'a', 'level': 0, 'props': []},-->
+<!--                                {'id': 'e2b3a22a-996c-464c-8bea-c4527f405d1f', 'label': 'b', 'level': 1},-->
+<!--                                {'id': 'c03e57b5-d43d-4be2-968c-6a092a595ea7', 'label': 'c', 'level': 0, 'props': []},-->
+<!--                                {'id': 'ab32d610-6893-4884-b23d-635dfeb66bb6', 'label': 'd', 'level': 1},-->
+<!--                                {'id': '7964aed9-7ebd-4ba8-bab6-8b6ce5582b8a', 'label': 'e', 'level': 1, 'props': []},-->
+<!--                                {'id': '230662e3-4d05-4926-959e-307cf9acc9e3', 'label': 'f', 'level': 2},-->
+<!--                                {'id': '163b2846-1351-4d65-bb3c-27ca54c08ab4', 'label': 'g', 'level': 0, 'props': []},-->
+<!--                                {'id': '13022497-6d55-4b27-a9a2-cd8060c46df3', 'label': 'h', 'level': 2}],-->
+<!--                      'edges': [-->
+<!--                                {'from': '6233504d-70a8-4a4b-9d52-5d3c28f509a2', 'to': 'e2b3a22a-996c-464c-8bea-c4527f405d1f', 'label': 'job1'},-->
+<!--                                {'from': 'c03e57b5-d43d-4be2-968c-6a092a595ea7', 'to': 'ab32d610-6893-4884-b23d-635dfeb66bb6', 'label': 'job1'},-->
+<!--                                {'from': '7964aed9-7ebd-4ba8-bab6-8b6ce5582b8a', 'to': '230662e3-4d05-4926-959e-307cf9acc9e3', 'label': 'job2'},-->
+<!--                                {'from': '163b2846-1351-4d65-bb3c-27ca54c08ab4', 'to': '13022497-6d55-4b27-a9a2-cd8060c46df3', 'label': 'job3'}-->
+<!--                                ]-->
+<!--                      }-->
+<!--        const data = {-->
+<!--            'nodes': [-->
+<!--                { 'id': 'a', 'label': 'a', 'level': 0, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'b', 'label': 'b', 'level': 1, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'c', 'label': 'c', 'level': 0, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'd', 'label': 'd', 'level': 1, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'e', 'label': 'e', 'level': 0, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'f', 'label': 'f', 'level': 1, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'g', 'label': 'g', 'level': 0, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } },-->
+<!--                { 'id': 'h', 'label': 'h', 'level': 2, 'props': { 'ID': 'a', 'Level': 0, 'Job': 'job1' } }-->
+<!--            ],-->
+<!--            'edges': [-->
+<!--                { 'from': 'a', 'to': 'b', 'label': 'job1' },-->
+<!--                { 'from': 'c', 'to': 'd', 'label': 'job1' },-->
+<!--                { 'from': 'e', 'to': 'f', 'label': 'job1' },-->
+<!--                { 'from': 'f', 'to': 'h', 'label': 'job2' },-->
+<!--                { 'from': 'a', 'to': 'h', 'label': 'job1' },-->
+<!--            ]-->
+<!--        };-->
+
+        // Create a network visualization
+        const container = document.getElementById('graph');
+        const options = {
+            nodes: {
+                shape: 'box',
+                borderRadius: 10,
+                color: {
+                    background: 'lightblue',
+                    border: 'black',
+                    highlight: {
+                        background: 'lightblue',
+                        border: 'black'
+                    }
+                },
+                font: {
+                    face: 'Arial',
+                    size: 20
+                }
+            },
+            edges: {
+                arrows: {
+                    to: {
+                        enabled: true,
+                        type: 'arrow'
+                    }
+                },
+                font: {
+                    face: 'Arial',
+                    size: 17
+                },
+                smooth: {
+                    type: 'cubicBezier',
+                    roundness: 0.4 // Set the roundness of the edges
+                },
+                align: 'horizontal' // Set the alignment of edge labels to horizontal
+    },
+            layout: {
+                hierarchical: {
+                    direction: 'LR', // Set direction to left to right
+                    sortMethod: 'directed', // Sort nodes based on directed edges
+                    levelSeparation: 300, // Set spacing between levels
+                    nodeSpacing: 10 // Set spacing between nodes on the same level
+                }
+            }
+        };
+        const network = new vis.Network(container, data, options);
+
+        // Update node colors based on level
+        function color_level(data) {
+            data.nodes.forEach(node => {
+                if (node.level === 0) {
+                    network.body.nodes[node.id].options.color.background = 'lightblue';
+                } else if (node.level === 1) {
+                    network.body.nodes[node.id].options.color.background = 'lightgreen';
+                } else if (node.level === 2) {
+                    network.body.nodes[node.id].options.color.background = 'lightsalmon';
+                }
+            });
+
+            network.redraw();
+        }
+        color_level(data)
+
+
+<!--        data.nodes.forEach(node => {-->
+<!--            if (node.level === 0) {-->
+<!--                network.body.nodes[node.id].options.color.background = 'lightblue';-->
+<!--            } else if (node.level === 1) {-->
+<!--                network.body.nodes[node.id].options.color.background = 'lightgreen';-->
+<!--            } else if (node.level === 2) {-->
+<!--                network.body.nodes[node.id].options.color.background = 'lightsalmon';-->
+<!--            }-->
+<!--        });-->
+
+<!--        network.redraw();-->
+
+
+        // Add click event listener to nodes
+    network.on("click", function (params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const node = data.nodes.find(n => n.id === nodeId);
+            if (node) {
+                showPopup(node); // Show popup with node properties
+            }
+        }
+    });
+
+    // Function to show popup with node properties
+    function showPopup(node) {
+        const props = node.props;
+        let tableHtml = '<table>';
+        for (const prop in props) {
+            tableHtml += `<tr><td>${prop}</td><td>${props[prop]}</td></tr>`;
+        }
+        tableHtml += '</table>';
+
+        const popupHtml = `
+            <div style="padding: 16px;">
+                <h3>${node.title}</h3>
+                ${tableHtml}
+            </div>
+        `;
+
+        // Create a popup div element
+        const popupDiv = document.createElement('div');
+        popupDiv.innerHTML = popupHtml;
+        popupDiv.style.position = 'absolute';
+        popupDiv.style.top = '50%';
+        popupDiv.style.left = '50%';
+        popupDiv.style.transform = 'translate(-50%, -50%)';
+        popupDiv.style.backgroundColor = 'white';
+        popupDiv.style.border = '1px solid black';
+        popupDiv.style.padding = '16px';
+        popupDiv.style.zIndex = '9999';
+
+        // Append popup div to body
+        document.body.appendChild(popupDiv);
+
+        // Add click event listener to close the popup when clicked outside of it
+        document.addEventListener('click', function closePopup(event) {
+            if (!popupDiv.contains(event.target)) {
+                popupDiv.remove();
+                document.removeEventListener('click', closePopup);
+            }
+        });
+    }
+
+    // Add event listener to filter input
+document.getElementById('filterInput').addEventListener('input', function () {
+    // Reload the page if filter input is empty
+    if (this.value === '') {
+        location.reload();
+        return;
+    }
+    const filterValue = this.value.toLowerCase();
+    const exactMatch = document.getElementById('exactMatchCheckbox').checked;
+
+    // Perform BFS to find all connected nodes and edges
+    const connectedNodes = new Set();
+    const connectedEdges = new Set();
+    const filterNode = data.nodes.find(n => n.label === filterValue)
+    const queue = [filterNode.id];
+    const visited = new Set();
+
+    while (queue.length > 0) {
+        const currentNode = queue.shift();
+        visited.add(currentNode);
+
+        // Find nodes connected to current node
+        data.edges.forEach(edge => {
+            if (edge.from === currentNode || edge.to === currentNode) {
+                connectedEdges.add(edge.id);
+
+                if (edge.from === currentNode && !visited.has(edge.to)) {
+                    queue.push(edge.to);
+                    connectedNodes.add(edge.to);
+                } else if (edge.to === currentNode && !visited.has(edge.from)) {
+                    queue.push(edge.from);
+                    connectedNodes.add(edge.from);
+                }
+            }
+        });
+    }
+
+    // Loop through all nodes and update their visibility and highlighting
+    data.nodes.forEach(function (node) {
+        const isFilteredNode = node.label.toLowerCase() === filterValue;
+
+        // Update visibility of nodes based on filter input
+        if (exactMatch) {
+            if (isFilteredNode || connectedNodes.has(node.id)) {
+                node.hidden = false;
+            } else {
+                node.hidden = true;
+            }
+        } else {
+            if (node.label.toLowerCase().includes(filterValue) || connectedNodes.has(node.id)) {
+                node.hidden = false;
+            } else {
+                node.hidden = true;
+            }
+        }
+
+<!--        // Update highlighting of connected nodes-->
+<!--        if (connectedNodes.has(node.id)) {-->
+<!--            node.color = { background: 'yellow' };-->
+<!--        } else {-->
+<!--            node.color = { background: 'white' };-->
+<!--        }-->
+    });
+
+    // Loop through all edges and update their visibility and color
+    data.edges.forEach(function (edge) {
+        if (connectedEdges.has(edge.id)) {
+            edge.hidden = false;
+            edge.color = { color: 'yellow' };
+        } else {
+            edge.hidden = true;
+        }
+    });
+
+    // Update the visualization with the modified data
+    network.setData(data);
+    color_level(data)
+});
+
+
+</script>
+</body>
+
+</html>
