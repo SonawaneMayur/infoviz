@@ -16,7 +16,7 @@ It allows you to visually explore and understand the relationships between diffe
 - Python 3.9
 - Django 4.1
 - vis.js (JavaScript library for network visualization)
-- vis-network (Python library for integrating vis.js with Django)
+- HTML
 
 ## Installation
 
