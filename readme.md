@@ -57,6 +57,10 @@ python manage.py runserver
 
 7.Open your web browser and go to http://localhost:8000 to access the data lineage visualization tool.
 
+## Sample Screenshot
+
+![Data Lineage](infoviz/graph/media/screenshots/data_lineage.png)
+
 
 ##Usage
 1.Use the data lineage visualization tool to explore the relationships between tables in your data lake.
