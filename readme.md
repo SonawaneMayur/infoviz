@@ -23,7 +23,7 @@ It allows you to visually explore and understand the relationships between diffe
 1. Clone this repository to your local machine:
 
 ```sh
-git clone https://github.com/SonawaneMayur/django-data-lineage.git
+git clone https://github.com/SonawaneMayur/infoviz.git
 ```
 
 
