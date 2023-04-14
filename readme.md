@@ -63,10 +63,11 @@ python manage.py runserver
 
 
 ##Usage
-1.Use the data lineage visualization tool to explore the relationships between tables in your data lake.
-2.Use the filter and highlighting options to focus on specific tables or connections.
-3.Customize the appearance of nodes and edges by updating the settings in your HTML file.
-4.Interact with the visualization to zoom, pan, and select nodes or edges for more information.
+
+1. Use the data lineage visualization tool to explore the relationships between tables in your data lake.
+2. Use the filter and highlighting options to focus on specific tables or connections.
+3. Customize the appearance of nodes and edges by updating the settings in your HTML file.
+4. Interact with the visualization to zoom, pan, and select nodes or edges for more information.
 
 
 ##License
