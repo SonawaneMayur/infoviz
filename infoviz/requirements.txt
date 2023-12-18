@@ -1,0 +1,7 @@
+asgiref==3.6.0
+Django==4.1.7
+pip==21.1.2
+PyYAML==6.0
+setuptools==57.0.0
+sqlparse==0.4.3
+wheel== 0.36.2

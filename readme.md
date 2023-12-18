@@ -57,6 +57,13 @@ python manage.py runserver
 
 7.Open your web browser and go to http://localhost:8000 to access the data lineage visualization tool.
 
+# Build the Docker image
+    docker-compose build
+
+# Run the Docker container
+    docker-compose up
+
+
 ## Sample Screenshot
 
 ![Data Lineage](infoviz/graph/media/screenshots/data_lineage.png)
