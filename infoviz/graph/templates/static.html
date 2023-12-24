@@ -179,6 +179,21 @@
             });
         }
 
+
+        // Adding hover event listener to the network
+        network.on("hoverNode", function(params) {
+            // The callback function will be executed when a node is hovered
+
+            // Access information about the hovered node through the 'params' object
+            const nodeId = params.nodes[0];
+            const node = data.nodes.find(function (n) {
+                                return n.id === nodeId;
+                             });
+
+            // Call the showPopup function with the hovered node information
+            showPopup(node);
+        });
+
         // Add event listener to filter input
     document.getElementById('filterInput').addEventListener('input', function () {
         // Reload the page if filter input is empty
